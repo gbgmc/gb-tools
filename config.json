@@ -1,0 +1,14 @@
+{
+    "mission": {
+        "relativePath": "GroundBranch/Content/GroundBranch/Mission",
+        "stringsToReplace": {
+            "/Game/roundBranch/Character/Badguys/BP_BG_Ruski.BP_BG_Ruski_c": "/Game/GroundBranch/Character/Badguys/BP_BG_Ruski.BP_BG_Ruski_c",
+            "/Game/roundBranch/Character/Badguys/BP_BG_LowVis.BP_BG_LowVis_c": "/Game/GroundBranch/Character/Badguys/BP_BG_LowVis.BP_BG_LowVis_c",
+            "/Game/roundBranch/Character/Badguys/BP_BG_Militant.BP_BG_Militant_": "/Game/GroundBranch/Character/Badguys/BP_BG_Militant.BP_BG_Militant_c"
+        }
+    },
+    "loadouts": {
+        "sourceRelativePath": "GroundBranch/Content/GroundBranch/AI/Loadouts/BadGuys",
+        "destinationRelativePath": "GroundBranch/Content/GroundBranch/AI/Loadouts/_BadGuys"
+    }
+}
