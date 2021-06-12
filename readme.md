@@ -21,7 +21,8 @@ Branch mission editor to see them.
 
 To install the tools:
 
-1. Download the latest release from the [releases](/releases) section,
+1. Download the latest release matching your installed version of Ground Branch
+from the [releases](https://github.com/JakBaranowski/gb-tools/releases) section,
 2. Unpack the contentes of the downloaded archive to Ground Branch root 
 directory, by default `C:\Program Files (x86)\Steam\steamapps\common\Ground Branch`.
 
@@ -42,7 +43,7 @@ the repetetive process.
 2. Place the loadout file in the original AI loadout folder, by default 
 `C:\Program Files (x86)\Steam\steamapps\common\Ground Branch\GroundBranch\Content\GroundBranch\AI\Loadouts\BadGuys`
 3. Open Command Line in Ground Branch installation folder,
-4. Run `gbt mirror` command in the command line prompt.
+4. Run `gbt loadout` command in the command line prompt.
 
 Note: this will also remove files in the `_BadGuys` folder if they don't have a 
 counterpart in the original `BadGuys` folder.
@@ -50,10 +51,17 @@ counterpart in the original `BadGuys` folder.
 Alternativly, if you use Visual Studio Code to edit the AI loadouts you use an
 extension that will run a command whenever you save a file with a mathing path,
 e.g.: [Run on save](https://marketplace.visualstudio.com/items?itemName=emeraldwalk.RunOnSave)
-and configure it to run the `gbt mirror` command whenever a file is saved to the 
+and configure it to run the `gbt loadout` command whenever a file is saved to the 
 original AI loadout folder. 
 
-### Fixing invalid class paths in mission files
+### WIP! Fixing invalid class paths in mission files
+
+NOTE: After a lot of experimenting it seems that this is harder than I thought,
+and atm I'm working on parsing the mission file into some form that can be easily
+edited. The next step would be to write it back into a mission file.
+
+If you have an idea how to make this work reliably, feel free to 
+[contribute](#Contributing) to this project.
 
 Due to another bug after selecting an AI class in the Ground Branch mission editor
 the game will search for the class files under an invalid path. After some digging
@@ -64,14 +72,10 @@ takes a lot of time, so you can automate the process using GB Tools:
 2. Create your mission files and set up spawn points, select the classes you want
 to use (they will not work at this point).
 3. Open Command Line in Ground Branch installation folder,
-4. Run `gbt mission <path to mission file>` command in the command line prompt. 
-E.g.: `gbt mission GroundBranch\Content\GroundBranch\Mission\Arena\example.mis`.
+4. Run `gbt mission fix <path to mission file>` command in the command line prompt. 
+E.g.: `gbt mission fix GroundBranch\Content\GroundBranch\Mission\Arena\example.mis`.
 
-Note: this is kind of a hacky way to resolve the issue. It did work fine with multiple
-mission files I created, but it may not work in some cases. 
-
-The tool will create a backup of the original mission file with the `.mis_backup` 
-extension.
+The tool will create a backup of the original mission file.
 
 ## Contributing
 
@@ -79,11 +83,6 @@ Everyone is more than welcome to fork the project and post pull requests. I'll t
 to review and merge as soon as possible.
 
 The project uses GoLang 1.16.4.
-
-The versioning will follow the versioning of Ground Branch, but will add minor 
-version number for possible tool updates within one Ground Branch release cycle.
-E.g.: first release of the tool for Ground Branch version `1032.3` will have version
- `1032.3.1`.
 
 ## Kudos
 
