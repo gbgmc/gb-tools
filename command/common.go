@@ -5,7 +5,8 @@ import (
 	"os"
 )
 
-func CheckForArgument(index int) (string, error) {
+// Checks if argument under specified index exists and returns it if it does.
+func GetArgument(index int) (string, error) {
 	if len(os.Args) < index+1 {
 		return "", errors.New("insufficient number of arguments given")
 	}
