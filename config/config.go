@@ -1,10 +1,13 @@
 package config
 
 import (
+	"embed"
 	"encoding/json"
-
-	"github.com/JakBaranowski/gb-tools/helpers"
+	"log"
 )
+
+//go:embed config.json
+var embededConfig embed.FS
 
 // Config is a struct used to hold the contents of the configuration json file.
 type Config struct {
@@ -22,7 +25,10 @@ type Loadout struct {
 	DestinationRelativePath string
 }
 
-func (conf *Config) ParseConfig(configPath string) {
-	configFile := helpers.OpenAndReadFile(configPath)
+func (conf *Config) ParseConfig() {
+	configFile, err := embededConfig.ReadFile("config.json")
+	if err != nil {
+		log.Fatal(err)
+	}
 	json.Unmarshal(configFile, conf)
 }
