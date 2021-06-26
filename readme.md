@@ -54,7 +54,7 @@ e.g.: [Run on save](https://marketplace.visualstudio.com/items?itemName=emeraldw
 and configure it to run the `gbt.exe loadout` command whenever a file is saved to the 
 original AI loadout folder.
 
-### Packing game mode files
+### Packaging game mode files
 
 If you're working on game modes and want to deliver them in a manner that will
 make it easy to "install" them. Best way afaik is providing a zipped archive that
@@ -67,6 +67,25 @@ Here's how:
 `C:\Program Files (x86)\Steam\steamapps\common\Ground Branch`.
 3. Run the `gbt.exe pack "<manifestFilePath>"` command.
 4. The packaged game mode should be waiting for you at the Ground Branch root folder.
+
+The manifest file can have any extension but has to follow json formatting. See
+example below:
+
+```json
+{
+    "name" : "BreakOut",
+    "version" : "0.1",
+    "files" : [
+        "GroundBranch/Content/GroundBranch/DefaultLoadouts/Captive.kit",
+        "GroundBranch/Content/Localization/GroundBranch/en/BreakOut.csv",
+        "GroundBranch/Content/GroundBranch/Lua/BreakOut.lua",
+        "GroundBranch/Content/GroundBranch/Lua/common/StringOperations.lua",
+        "GroundBranch/Content/GroundBranch/Lua/common/TableOperations.lua",
+        "GroundBranch/Content/GroundBranch/Mission/Tanker/BreakOut.mis",
+        "GroundBranch/Content/GroundBranch/Mission/RunDown/BreakOut.mis"
+    ]
+}
+```
 
 ### Deprecated! Fixing invalid class paths in mission files
 
