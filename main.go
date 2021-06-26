@@ -2,26 +2,24 @@ package main
 
 import (
 	"fmt"
-	"log"
-	"os"
 
 	"github.com/JakBaranowski/gb-tools/command"
+	"github.com/JakBaranowski/gb-tools/common"
 	"github.com/JakBaranowski/gb-tools/config"
 )
 
 func main() {
-	var config config.Config
-	config.ParseConfig()
-	commandString, err := command.GetArgument(1)
-	if err != nil {
-		log.Fatal(err)
-	}
+	Config := config.ParseConfig()
+	commandString, err := common.GetArgument(1)
+	common.Must(err)
 	switch commandString {
 	case "loadout":
-		command.Loadout(config)
+		command.Loadout(Config)
 	case "mission":
-		command.Mission(config)
+		command.Mission(Config)
+	case "pack":
+		command.Pack()
 	default:
-		fmt.Printf("Unsopported command \"%s\".", os.Args[1])
+		fmt.Printf("Unsopported command \"%s\".", commandString)
 	}
 }
