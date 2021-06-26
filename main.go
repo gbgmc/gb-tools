@@ -19,6 +19,8 @@ func main() {
 		command.Mission(Config)
 	case "pack":
 		command.Pack()
+	case "config":
+		command.Config()
 	default:
 		fmt.Printf("Unsopported command \"%s\".", commandString)
 	}
