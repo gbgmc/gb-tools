@@ -23,8 +23,8 @@ To install the tools:
 
 1. Download the latest release matching your installed version of Ground Branch
 from the [releases](https://github.com/JakBaranowski/gb-tools/releases) section,
-2. Unpack the contentes of the downloaded archive to Ground Branch root 
-directory, by default `C:\Program Files (x86)\Steam\steamapps\common\Ground Branch`.
+2. Place the executable in the Ground Branch root directory, by default 
+`C:\Program Files (x86)\Steam\steamapps\common\Ground Branch`.
 
 ## Usage
 
@@ -43,25 +43,41 @@ the repetetive process.
 2. Place the loadout file in the original AI loadout folder, by default 
 `C:\Program Files (x86)\Steam\steamapps\common\Ground Branch\GroundBranch\Content\GroundBranch\AI\Loadouts\BadGuys`
 3. Open Command Line in Ground Branch installation folder,
-4. Run `gbt loadout` command in the command line prompt.
+4. Run `gbt.exe loadout` command in the command line prompt.
 
 Note: this will also remove files in the `_BadGuys` folder if they don't have a 
 counterpart in the original `BadGuys` folder.
 
-Alternativly, if you use Visual Studio Code to edit the AI loadouts you use an
+Alternativly, if you use Visual Studio Code to edit the AI loadouts you can use an
 extension that will run a command whenever you save a file with a mathing path,
 e.g.: [Run on save](https://marketplace.visualstudio.com/items?itemName=emeraldwalk.RunOnSave)
-and configure it to run the `gbt loadout` command whenever a file is saved to the 
-original AI loadout folder. 
+and configure it to run the `gbt.exe loadout` command whenever a file is saved to the 
+original AI loadout folder.
 
-### WIP! Fixing invalid class paths in mission files
+### Packing game mode files
+
+If you're working on game modes and want to deliver them in a manner that will
+make it easy to "install" them. Best way afaik is providing a zipped archive that
+has to be unpacked in the game root folder by the "end user". You can create 
+such archives using the `gbt.exe gamemode pack <manifestFilePath>` command. 
+Here's how:
+
+1. Make sure to install the tool ([instructions](#installation))
+2. Create a manifest file at the Ground Branch root directory, by default 
+`C:\Program Files (x86)\Steam\steamapps\common\Ground Branch`.
+3. Run the `gbt.exe pack "<manifestFilePath>"` command.
+4. The packaged game mode should be waiting for you at the Ground Branch root folder.
+
+### Deprecated! Fixing invalid class paths in mission files
 
 NOTE: After a lot of experimenting it seems that this is harder than I thought,
-and atm I'm working on parsing the mission file into some form that can be easily
-edited. The next step would be to write it back into a mission file.
+and atm this is on hold. Especially that I found a workaround that is a lot 
+more reliable and easy to use than this. If you're interested in the workaround
+I'll share more about it when I "document" it properly
 
-If you have an idea how to make this work reliably, feel free to 
-[contribute](#Contributing) to this project.
+However, if you are interested in this part of the procject and if you have an 
+idea how to make this work reliably, feel free to [contribute](#Contributing) 
+to this project.
 
 Due to another bug after selecting an AI class in the Ground Branch mission editor
 the game will search for the class files under an invalid path. After some digging
@@ -72,8 +88,8 @@ takes a lot of time, so you can automate the process using GB Tools:
 2. Create your mission files and set up spawn points, select the classes you want
 to use (they will not work at this point).
 3. Open Command Line in Ground Branch installation folder,
-4. Run `gbt mission fix <path to mission file>` command in the command line prompt. 
-E.g.: `gbt mission fix GroundBranch\Content\GroundBranch\Mission\Arena\example.mis`.
+4. Run `gbt.exe mission fix <path to mission file>` command in the command line prompt. 
+E.g.: `gbt.exe mission fix GroundBranch\Content\GroundBranch\Mission\Arena\example.mis`.
 
 The tool will create a backup of the original mission file.
 
