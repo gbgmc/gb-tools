@@ -2,45 +2,36 @@ package fileops
 
 import (
 	"io"
-	"log"
 	"os"
+
+	"github.com/JakBaranowski/gb-tools/common"
 )
 
 // Copies file and it's content from a file at srcPath to a file at dstPath.
 func Copy(srcPath string, dstPath string) {
 	src, err := os.Open(srcPath)
-	if err != nil {
-		log.Fatal(err)
-	}
+	common.Must(err)
 	defer src.Close()
 
 	dst, err := os.Create(dstPath)
-	if err != nil {
-		log.Fatal(err)
-	}
+	common.Must(err)
 	defer dst.Close()
 
 	_, err = io.Copy(dst, src)
-	if err != nil {
-		log.Fatal(err)
-	}
+	common.Must(err)
 }
 
 // Touches, i.e. creates an empty file, at dstPath.
 func Touch(dstPath string) {
 	dst, err := os.Create(dstPath)
-	if err != nil {
-		log.Fatal(err)
-	}
+	common.Must(err)
 	defer dst.Close()
 }
 
 // Opens and reads a specified file. Returns read byte array.
 func OpenAndReadFile(pathToFile string) []byte {
 	file, err := os.Open(pathToFile)
-	if err != nil {
-		log.Fatal(err)
-	}
+	common.Must(err)
 	defer file.Close()
 	return ReadFile(file)
 }
@@ -48,15 +39,11 @@ func OpenAndReadFile(pathToFile string) []byte {
 // Reads a provided file. Returns read byte array.
 func ReadFile(file *os.File) []byte {
 	fileStat, err := file.Stat()
-	if err != nil {
-		log.Fatal(err)
-	}
+	common.Must(err)
 
 	fileByte := make([]byte, fileStat.Size())
 	_, err = file.Read(fileByte)
-	if err != nil {
-		log.Fatal(err)
-	}
+	common.Must(err)
 
 	return fileByte
 }
@@ -77,17 +64,13 @@ func DoesExist(path string) bool {
 // Creates directory at path with the specified permission.
 func CreateDir(path string, perm os.FileMode) {
 	err := os.Mkdir(path, perm)
-	if err != nil {
-		log.Fatal(err)
-	}
+	common.Must(err)
 }
 
 // Removes the file at path.
 func RemoveFile(path string) {
 	err := os.Remove(path)
-	if err != nil {
-		log.Fatal(err)
-	}
+	common.Must(err)
 }
 
 // Creates a copy of the srcFile in dstFile, and replaces all occurences of
@@ -106,14 +89,10 @@ func ReplaceBytesNewFile(
 	byteDst := ReplaceBytes(byteSrc, byteFind, byteReplace, keepSize)
 
 	dst, err := os.Create(dstFile)
-	if err != nil {
-		log.Fatal(err)
-	}
+	common.Must(err)
 
 	_, err = dst.Write(byteDst)
-	if err != nil {
-		log.Fatal(err)
-	}
+	common.Must(err)
 }
 
 // Replaces all occurences of stringFind in the specified file with stringReplace.
@@ -128,16 +107,12 @@ func ReplaceBytesInFile(
 	byteReplace := []byte(replace)
 
 	src, err := os.OpenFile(file, os.O_RDWR, 0644)
-	if err != nil {
-		log.Fatal(err)
-	}
+	common.Must(err)
 	defer src.Close()
 
 	byteSrc := ReadFile(src)
 	byteDst := ReplaceBytes(byteSrc, byteFind, byteReplace, keepSize)
 
 	_, err = src.WriteAt(byteDst, 0)
-	if err != nil {
-		log.Fatal(err)
-	}
+	common.Must(err)
 }

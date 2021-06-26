@@ -2,33 +2,52 @@ package command
 
 import (
 	"fmt"
-	"log"
 	"os"
 	"path/filepath"
 
+	"github.com/JakBaranowski/gb-tools/common"
 	"github.com/JakBaranowski/gb-tools/config"
 	"github.com/JakBaranowski/gb-tools/fileops"
 )
 
+// Loadout will glob all files in original directories specified in config file,
+// mirror all files from original directories in counterpart directories, and
+// then remove files not present in the original directories from the
+// counterpart directories.
 func Loadout(config config.Config) {
-	fmt.Printf("Started mirroring AI loadouts.\n")
-	fileops.CreateDirIfDoesntExist(config.Loadouts.DestinationRelativePath, 0755)
-	removeRedundantMirrorFiles(config)
-	mirrorFiles(config)
-	fmt.Printf("Finished mirroring AI loadouts.\n")
+	for i := range config.Loadouts {
+		fmt.Printf(
+			"Started mirroring AI loadouts %s.\n",
+			config.Loadouts[i].Name,
+		)
+		fileops.CreateDirIfDoesntExist(
+			config.Loadouts[i].DestinationRelativePath,
+			0755,
+		)
+		removeRedundantMirrorFiles(
+			config.Loadouts[i].SourceRelativePath,
+			config.Loadouts[i].DestinationRelativePath,
+		)
+		mirrorFiles(
+			config.Loadouts[i].SourceRelativePath,
+			config.Loadouts[i].DestinationRelativePath,
+		)
+		fmt.Printf(
+			"Finished mirroring AI loadouts %s.\n",
+			config.Loadouts[i].Name,
+		)
+	}
 }
 
-func removeRedundantMirrorFiles(config config.Config) {
+func removeRedundantMirrorFiles(srcPath string, dstPath string) {
 	fmt.Printf("Removing redundant files from mirror directory.\n")
-	dstGlobPattern := filepath.Join(config.Loadouts.DestinationRelativePath, "*.kit")
+	dstGlobPattern := filepath.Join(dstPath, "*.kit")
 	dstFileList, err := filepath.Glob(dstGlobPattern)
-	if err != nil {
-		log.Fatal(err)
-	}
+	common.Must(err)
 
 	for _, file := range dstFileList {
 		srcFilePath := filepath.Join(
-			config.Loadouts.SourceRelativePath,
+			srcPath,
 			filepath.Base(file),
 		)
 		if !fileops.DoesExist(srcFilePath) {
@@ -37,24 +56,20 @@ func removeRedundantMirrorFiles(config config.Config) {
 				file,
 			)
 			err = os.Remove(file)
-			if err != nil {
-				log.Fatal(err)
-			}
+			common.Must(err)
 		}
 	}
 }
 
-func mirrorFiles(config config.Config) {
+func mirrorFiles(srcPath string, dstPath string) {
 	fmt.Printf("Copying orginal files to mirror directory.\n")
-	srcGlobPattern := filepath.Join(config.Loadouts.SourceRelativePath, "*.kit")
+	srcGlobPattern := filepath.Join(srcPath, "*.kit")
 	srcFileList, err := filepath.Glob(srcGlobPattern)
-	if err != nil {
-		log.Fatal(err)
-	}
+	common.Must(err)
 
 	for _, file := range srcFileList {
 		dstFilePath := filepath.Join(
-			config.Loadouts.DestinationRelativePath,
+			dstPath,
 			filepath.Base(file),
 		)
 		if !fileops.DoesExist(dstFilePath) {

@@ -3,6 +3,8 @@ package fileops
 import (
 	"bytes"
 	"fmt"
+	"log"
+	"math"
 	"strconv"
 )
 
@@ -16,6 +18,63 @@ func ReplaceBytes(
 		byteFind, byteReplace = equalizeByteSize(byteFind, byteReplace)
 	}
 	return bytes.ReplaceAll(byteSrc, byteFind, byteReplace)
+}
+
+func ReplaceAndCount(
+	byteSrc []byte,
+	byteFind []byte,
+	byteReplace []byte,
+	keepSize bool,
+) []byte {
+	if keepSize {
+		byteFind, byteReplace = equalizeByteSize(byteFind, byteReplace)
+	}
+
+	byteIndex := 0
+	replaces := 0
+
+	for {
+		byteIndex = bytes.Index(byteSrc, byteFind)
+		if byteIndex >= 0 && byteIndex < len(byteSrc) {
+			replaces++
+			byteSrc = bytes.Replace(byteSrc, byteFind, byteReplace, 1)
+			byteSrc = ReplaceByteAtOffsetFromMatch(
+				byteSrc,
+				byteReplace,
+				-4,
+				byte(len(byteReplace)+1),
+			)
+		} else {
+			break
+		}
+	}
+
+	// log.Printf("%d", len(byteSrc))
+
+	// sizeDiff := replaces * (len(byteReplace) - len(byteFind))
+	// log.Printf("R: %d, SD: %d.", replaces, sizeDiff)
+
+	// ArrayPropertyByte := []byte{83, 97, 118, 101, 100, 65, 99, 116, 111, 114, 115, 0, 14, 0, 0, 0, 65, 114, 114, 97, 121, 80, 114, 111, 112, 101, 114, 116, 121}
+	// a := bytes.Index(byteSrc, ArrayPropertyByte) + 30
+	// currentSize := GetSize(byteSrc[a : a+3])
+	// newSize := currentSize + sizeDiff
+	// log.Printf("@%d, %d > %d", a, currentSize, newSize)
+	// byteSize := SetSize(newSize)
+	// for i := 0; i < len(byteSize); i++ {
+	// 	byteSrc[a+i] = byteSize[i]
+	// }
+
+	// StructPropertyByte := []byte{83, 97, 118, 101, 100, 65, 99, 116, 111, 114, 115, 0, 15, 0, 0, 0, 83, 116, 114, 117, 99, 116, 80, 114, 111, 112, 101, 114, 116, 121}
+	// a = bytes.Index(byteSrc, StructPropertyByte) + 31
+	// currentSize = GetSize(byteSrc[a : a+3])
+	// newSize = currentSize + sizeDiff
+	// log.Printf("@%d, %d > %d", a, currentSize, newSize)
+	// byteSize = SetSize(newSize)
+	// for i := 0; i < len(byteSize); i++ {
+	// 	byteSrc[a+i] = byteSize[i]
+	// }
+
+	return byteSrc
 }
 
 // Finds the byteMatch in byteSrc and replaces the byte at the offset from the first
@@ -89,4 +148,46 @@ func CompareBytes(
 		}
 	}
 	return result
+}
+
+// Parses a multiple byte long byte sized. They are written in right to left
+// format.
+func GetSize(byteSize []byte) (intSize int) {
+	sum := 0
+	for i := range byteSize {
+		sum += int(byteSize[i]) * int(math.Pow(256, float64(i)))
+	}
+	return sum
+}
+
+// Parses a multiple byte long byte sized. They are written in right to left
+// format.
+func SetSize(intSize int) (byteSize []byte) {
+	byteSize = make([]byte, 4)
+	rest := 0
+	for i := 3; i >= 0; i-- {
+		denominator := int(math.Pow(256, float64(i)))
+		result := intSize / denominator
+		log.Printf("Result: %d", result)
+		byteSize[3] = byte(result)
+		intSize = intSize % denominator
+		log.Printf("Rest: %d", rest)
+	}
+	log.Printf("%d", byteSize)
+	return
+}
+
+func CountOccurences(byteSrc []byte, byteFind []byte) (count int) {
+	count = 0
+	byteIndex := 0
+	for byteIndex < len(byteSrc) {
+		baseIndex := bytes.Index(byteSrc[byteIndex:], byteFind)
+		if baseIndex >= 0 {
+			count++
+		} else {
+			break
+		}
+		byteIndex = byteIndex + baseIndex + len(byteFind)
+	}
+	return
 }
