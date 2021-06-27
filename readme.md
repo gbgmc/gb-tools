@@ -89,28 +89,11 @@ example below:
 
 ### Deprecated! Fixing invalid class paths in mission files
 
-NOTE: After a lot of experimenting it seems that this is harder than I thought,
-and atm this is on hold. Especially that I found a workaround that is a lot 
-more reliable and easy to use than this. If you're interested in the workaround
-I'll share more about it when I "document" it properly
-
-However, if you are interested in this part of the procject and if you have an 
-idea how to make this work reliably, feel free to [contribute](#Contributing) 
-to this project.
-
-Due to another bug after selecting an AI class in the Ground Branch mission editor
-the game will search for the class files under an invalid path. After some digging
-it turns out that this can be fixed by editing the .mis file. Doing this manually
-takes a lot of time, so you can automate the process using GB Tools:
-
-1. Make sure to install the tool ([instructions](#installation))
-2. Create your mission files and set up spawn points, select the classes you want
-to use (they will not work at this point).
-3. Open Command Line in Ground Branch installation folder,
-4. Run `gbt.exe mission fix <path to mission file>` command in the command line prompt. 
-E.g.: `gbt.exe mission fix GroundBranch\Content\GroundBranch\Mission\Arena\example.mis`.
-
-The tool will create a backup of the original mission file.
+After a lot of experimenting it seems that this is harder than I thought at first,
+and therefore at the moment this part of the project is abandoned. Especially 
+that I found a workaround that is a lot more reliable and easy to use than this.
+If you're interested in the workaround go to 
+[Ground Branch game modes GitHub wiki page](https://github.com/JakBaranowski/ground-branch-game-modes/wiki/mission-ai-class-workaround).
 
 ## Contributing
 

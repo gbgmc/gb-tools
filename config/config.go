@@ -50,9 +50,13 @@ func ParseConfig() (conf Config) {
 	common.Must(err)
 	configFilePath := filepath.Join(userConfigDir, "gbt", "gbt.conf")
 	if fileops.DoesExist(configFilePath) {
-		log.Printf("Config found")
+		log.Printf(
+			"Found user config file at '%s'. Proceeding with user config.",
+			configFilePath,
+		)
 		conf = ParseFileConfig(configFilePath)
 	} else {
+		log.Printf("No user config found. Proceeding with default config.")
 		conf = ParseEmbededConfig()
 	}
 	return
@@ -60,18 +64,22 @@ func ParseConfig() (conf Config) {
 
 // Saves the default config to gbt config directory. It can be then edited by hand
 // to include custom settings.
-func SaveConfig() {
+func SaveConfig(conf Config) {
 	userConfigDir, err := os.UserConfigDir()
 	common.Must(err)
 	configDirPath := filepath.Join(userConfigDir, "gbt")
 	fileops.CreateDirIfDoesntExist(configDirPath, 0755)
 	configFilePath := filepath.Join(configDirPath, "gbt.conf")
-	configFile, err := embededConfig.ReadFile("config.json")
+	configFile, err := json.MarshalIndent(conf, "", " ")
 	common.Must(err)
+	if fileops.DoesExist(configFilePath) {
+		log.Printf("Config file already exists.")
+		return
+	}
 	file, err := os.Create(configFilePath)
 	common.Must(err)
 	defer file.Close()
-	n, err := file.Write(configFile)
-	log.Printf("Written %d bytes to %s", n, configFilePath)
+	_, err = file.Write(configFile)
 	common.Must(err)
+	log.Printf("Config file saved in '%s'.", configFilePath)
 }

@@ -1,7 +1,7 @@
 package command
 
 import (
-	"fmt"
+	"log"
 	"os"
 	"path/filepath"
 
@@ -16,8 +16,8 @@ import (
 // counterpart directories.
 func Loadout(config config.Config) {
 	for i := range config.Loadouts {
-		fmt.Printf(
-			"Started mirroring AI loadouts %s.\n",
+		log.Printf(
+			"Mirroring AI loadouts %s.",
 			config.Loadouts[i].Name,
 		)
 		fileops.CreateDirIfDoesntExist(
@@ -32,15 +32,14 @@ func Loadout(config config.Config) {
 			config.Loadouts[i].SourceRelativePath,
 			config.Loadouts[i].DestinationRelativePath,
 		)
-		fmt.Printf(
-			"Finished mirroring AI loadouts %s.\n",
+		log.Printf(
+			"Finished mirroring AI loadouts %s.",
 			config.Loadouts[i].Name,
 		)
 	}
 }
 
 func removeRedundantMirrorFiles(srcPath string, dstPath string) {
-	fmt.Printf("Removing redundant files from mirror directory.\n")
 	dstGlobPattern := filepath.Join(dstPath, "*.kit")
 	dstFileList, err := filepath.Glob(dstGlobPattern)
 	common.Must(err)
@@ -51,8 +50,8 @@ func removeRedundantMirrorFiles(srcPath string, dstPath string) {
 			filepath.Base(file),
 		)
 		if !fileops.DoesExist(srcFilePath) {
-			fmt.Printf(
-				"Removing mirror file \"%s\", as the original no longer exists.\n",
+			log.Printf(
+				"Removing mirrored file \"%s\", as the original no longer exists.",
 				file,
 			)
 			err = os.Remove(file)
@@ -62,7 +61,6 @@ func removeRedundantMirrorFiles(srcPath string, dstPath string) {
 }
 
 func mirrorFiles(srcPath string, dstPath string) {
-	fmt.Printf("Copying orginal files to mirror directory.\n")
 	srcGlobPattern := filepath.Join(srcPath, "*.kit")
 	srcFileList, err := filepath.Glob(srcGlobPattern)
 	common.Must(err)
@@ -73,8 +71,8 @@ func mirrorFiles(srcPath string, dstPath string) {
 			filepath.Base(file),
 		)
 		if !fileops.DoesExist(dstFilePath) {
-			fmt.Printf(
-				"Mirroring file \"%s\".\n",
+			log.Printf(
+				"Mirroring file \"%s\".",
 				file,
 			)
 			fileops.Touch(dstFilePath)
