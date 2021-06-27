@@ -87,6 +87,39 @@ example below:
 }
 ```
 
+### Editing config
+
+Ground Branch tools config can be used to tell the tool which folders containing
+AI loadouts it should mirror when the `gbt.exe loadout` command is run. To edit
+Ground Branch Tools config:
+
+1. Aave the config using the `gbt.exe config` command.
+2. The config will be created at `%AppData%\gbt\gbt.conf`.
+3. Open the config with any text editor.
+4. Add entries to the `loadouts` array parameter.
+
+For example if we would want to mirror files from `GroundBranch/Content/GroundBranch/AI/Loadouts/Example`
+in `GroundBranch/Content/GroundBranch/AI/Loadouts/_Example` we could update the
+config to look like this
+
+```json
+{
+  "GamePath": "C:/Program Files (x86)/Steam/steamapps/common/Ground Branch",
+  "Loadouts": [
+    {
+      "Name": "BadGuys",
+      "SourceRelativePath": "GroundBranch/Content/GroundBranch/AI/Loadouts/BadGuys",
+      "DestinationRelativePath": "GroundBranch/Content/GroundBranch/AI/Loadouts/_BadGuys"
+    },
+    {
+      "Name": "Example",
+      "SourceRelativePath": "GroundBranch/Content/GroundBranch/AI/Loadouts/Example",
+      "DestinationRelativePath": "GroundBranch/Content/GroundBranch/AI/Loadouts/_Example"
+    }
+  ]
+}
+```
+
 ### Deprecated! Fixing invalid class paths in mission files
 
 After a lot of experimenting it seems that this is harder than I thought at first,

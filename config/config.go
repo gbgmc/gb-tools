@@ -17,10 +17,6 @@ var embededConfig embed.FS
 // Config is a struct used to hold the contents of the configuration json file.
 type Config struct {
 	GamePath string
-	Missions struct {
-		RelativePath     string
-		StringsToReplace map[string]string
-	}
 	Loadouts []struct {
 		Name                    string
 		SourceRelativePath      string
