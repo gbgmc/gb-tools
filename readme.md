@@ -49,8 +49,8 @@ Note: this will also remove files in the `_BadGuys` folder if they don't have a
 counterpart in the original `BadGuys` folder.
 
 Alternativly, if you use Visual Studio Code to edit the AI loadouts you can use an
-extension that will run a command whenever you save a file with a mathing path,
-e.g.: [Run on save](https://marketplace.visualstudio.com/items?itemName=emeraldwalk.RunOnSave)
+extension that will run a command whenever you save a file with a mathing path, e.g.: 
+[Save and Run by wk-j](https://marketplace.visualstudio.com/items?itemName=wk-j.save-and-run)
 and configure it to run the `gbt.exe loadout` command whenever a file is saved to the 
 original AI loadout folder.
 
