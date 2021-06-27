@@ -100,7 +100,7 @@ If you're interested in the workaround go to
 Everyone is more than welcome to fork the project and post pull requests. I'll try
 to review and merge as soon as possible.
 
-The project uses GoLang 1.16.4.
+The project uses GoLang 1.16.5.
 
 ## Kudos
 
