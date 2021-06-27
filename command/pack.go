@@ -6,8 +6,9 @@ import (
 	"github.com/JakBaranowski/gb-tools/gamemode"
 )
 
-// Parses the provided argument - game mode manifest file path - and packages it
+// Parses the game mode manifest file under the provided path and packages it
 // into easy to use zip files.
+// The manifest file can have any extension but has to be json formatted.
 func Pack() {
 	manifestPath, err := common.GetArgument(2)
 	common.Must(err)

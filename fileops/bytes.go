@@ -8,6 +8,8 @@ import (
 	"strconv"
 )
 
+// Replaces all occurences of byteFind in byteSrc with byteReplace. If keepSize
+// is true will not change the len(byteSrc)
 func ReplaceBytes(
 	byteSrc []byte,
 	byteFind []byte,
@@ -20,19 +22,20 @@ func ReplaceBytes(
 	return bytes.ReplaceAll(byteSrc, byteFind, byteReplace)
 }
 
+// Replaces byteFind with byteReplace in byteSrc. If keepSize is true will not
+// chance len(byteSrc). Returns the count of occurences of byteFind in original
+// file and the changed byte array.
 func ReplaceAndCount(
 	byteSrc []byte,
 	byteFind []byte,
 	byteReplace []byte,
 	keepSize bool,
-) []byte {
+) (int, []byte) {
 	if keepSize {
 		byteFind, byteReplace = equalizeByteSize(byteFind, byteReplace)
 	}
-
 	byteIndex := 0
 	replaces := 0
-
 	for {
 		byteIndex = bytes.Index(byteSrc, byteFind)
 		if byteIndex >= 0 && byteIndex < len(byteSrc) {
@@ -48,8 +51,7 @@ func ReplaceAndCount(
 			break
 		}
 	}
-
-	return byteSrc
+	return replaces, byteSrc
 }
 
 // Finds the byteMatch in byteSrc and replaces the byte at the offset from the first
@@ -99,6 +101,7 @@ func equalizeByteSize(
 	return a, b
 }
 
+// Compares two byte arrays and prints out the result.
 func CompareBytes(
 	a []byte,
 	b []byte,
@@ -152,6 +155,7 @@ func SetSize(intSize int) (byteSize []byte) {
 	return
 }
 
+// Returns the count of occurences of byteFind in byteSrc.
 func CountOccurences(byteSrc []byte, byteFind []byte) (count int) {
 	count = 0
 	byteIndex := 0
