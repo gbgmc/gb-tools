@@ -70,7 +70,7 @@ func SaveConfig(conf Config) {
 	configDirPath := filepath.Join(userConfigDir, "gbt")
 	fileops.CreateDirIfDoesntExist(configDirPath, 0755)
 	configFilePath := filepath.Join(configDirPath, "gbt.conf")
-	configFile, err := json.MarshalIndent(conf, "", " ")
+	configFile, err := json.MarshalIndent(conf, "", "  ")
 	common.Must(err)
 	if fileops.DoesExist(configFilePath) {
 		log.Printf("Config file already exists.")
