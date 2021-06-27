@@ -49,31 +49,6 @@ func ReplaceAndCount(
 		}
 	}
 
-	// log.Printf("%d", len(byteSrc))
-
-	// sizeDiff := replaces * (len(byteReplace) - len(byteFind))
-	// log.Printf("R: %d, SD: %d.", replaces, sizeDiff)
-
-	// ArrayPropertyByte := []byte{83, 97, 118, 101, 100, 65, 99, 116, 111, 114, 115, 0, 14, 0, 0, 0, 65, 114, 114, 97, 121, 80, 114, 111, 112, 101, 114, 116, 121}
-	// a := bytes.Index(byteSrc, ArrayPropertyByte) + 30
-	// currentSize := GetSize(byteSrc[a : a+3])
-	// newSize := currentSize + sizeDiff
-	// log.Printf("@%d, %d > %d", a, currentSize, newSize)
-	// byteSize := SetSize(newSize)
-	// for i := 0; i < len(byteSize); i++ {
-	// 	byteSrc[a+i] = byteSize[i]
-	// }
-
-	// StructPropertyByte := []byte{83, 97, 118, 101, 100, 65, 99, 116, 111, 114, 115, 0, 15, 0, 0, 0, 83, 116, 114, 117, 99, 116, 80, 114, 111, 112, 101, 114, 116, 121}
-	// a = bytes.Index(byteSrc, StructPropertyByte) + 31
-	// currentSize = GetSize(byteSrc[a : a+3])
-	// newSize = currentSize + sizeDiff
-	// log.Printf("@%d, %d > %d", a, currentSize, newSize)
-	// byteSize = SetSize(newSize)
-	// for i := 0; i < len(byteSize); i++ {
-	// 	byteSrc[a+i] = byteSize[i]
-	// }
-
 	return byteSrc
 }
 

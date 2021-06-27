@@ -9,18 +9,16 @@ import (
 )
 
 func main() {
-	Config := config.ParseConfig()
+	conf := config.ParseConfig()
 	commandString, err := common.GetArgument(1)
 	common.Must(err)
 	switch commandString {
 	case "loadout":
-		command.Loadout(Config)
-	case "mission":
-		command.Mission(Config)
+		command.Loadout(conf)
 	case "pack":
 		command.Pack()
 	case "config":
-		command.Config()
+		command.Config(conf)
 	default:
 		fmt.Printf("Unsopported command \"%s\".", commandString)
 	}
