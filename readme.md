@@ -3,11 +3,7 @@
 ## Description
 
 This is a set of tools that hopefully will help with developing game modes for
-Ground Branch. Currently, the tool helps resolve two issues:
-
-* The need to mirror the contents of the AI loadout file in order for the Ground
-Branch mission editor to see them.
-* Invalid paths to AI classes in the mission files.
+Ground Branch.
 
 ## Table of contents:
 
