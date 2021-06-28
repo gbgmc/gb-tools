@@ -1,25 +1,32 @@
 package main
 
 import (
-	"fmt"
+	"log"
 
-	"github.com/JakBaranowski/gb-tools/command"
 	"github.com/JakBaranowski/gb-tools/common"
 	"github.com/JakBaranowski/gb-tools/config"
+	"github.com/JakBaranowski/gb-tools/loadout"
+	"github.com/JakBaranowski/gb-tools/pack"
 )
 
 func main() {
 	conf := config.ParseConfig()
-	commandString, err := common.GetArgument(1)
+	commandString, err := common.GetRequiredArgument(
+		1,
+		"Supported commands are: 'loadout', 'pack' and 'config'",
+	)
 	common.Must(err)
 	switch commandString {
 	case "loadout":
-		command.Loadout(conf)
+		loadout.CommandLoadout(conf)
 	case "pack":
-		command.Pack()
+		pack.CommandPack()
 	case "config":
-		command.Config(conf)
+		config.CommandConfig(conf)
 	default:
-		fmt.Printf("Unsopported command \"%s\".", commandString)
+		log.Printf(
+			"Unsupported command \"%s\". Supported commands are: 'loadout', 'pack' and 'config'",
+			commandString,
+		)
 	}
 }

@@ -66,16 +66,13 @@ func SaveConfig(conf Config) {
 	configDirPath := filepath.Join(userConfigDir, "gbt")
 	fileops.CreateDirIfDoesntExist(configDirPath, 0755)
 	configFilePath := filepath.Join(configDirPath, "gbt.conf")
-	configFile, err := json.MarshalIndent(conf, "", "  ")
-	common.Must(err)
 	if fileops.DoesExist(configFilePath) {
 		log.Printf("Config file already exists.")
 		return
 	}
-	file, err := os.Create(configFilePath)
+	configFileContent, err := json.MarshalIndent(conf, "", "  ")
 	common.Must(err)
-	defer file.Close()
-	_, err = file.Write(configFile)
+	err = os.WriteFile(configFilePath, configFileContent, 0666)
 	common.Must(err)
 	log.Printf("Config file saved in '%s'.", configFilePath)
 }

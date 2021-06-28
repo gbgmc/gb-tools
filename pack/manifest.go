@@ -1,4 +1,4 @@
-package gamemode
+package pack
 
 import (
 	"encoding/json"
@@ -6,6 +6,7 @@ import (
 	"github.com/JakBaranowski/gb-tools/fileops"
 )
 
+// Struct for parsing json formatted game mode manifests.
 type Manifest struct {
 	Name    string
 	Version string
