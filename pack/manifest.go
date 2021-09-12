@@ -46,9 +46,18 @@ func GetFiles(manifest Manifest) (filesList []string) {
 	for _, file := range filesList {
 		log.Println(file)
 	}
-	filesList = removeDuplicateFiles(filesList)
+	filesList = normalizeSlashes(removeDuplicateFiles(filesList))
 	return
 }
+
+func normalizeSlashes(filesList []string) []string {
+	filesListNormalized := []string{}
+	for _, file := range filesList {
+		filesListNormalized = append(filesListNormalized, filepath.ToSlash(file))
+	}
+	return filesListNormalized
+}
+
 
 func removeDuplicateFiles(filesList []string) []string {
 	log.Println("Removing duplicated files")
