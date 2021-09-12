@@ -22,12 +22,13 @@ func CompressFiles(filename string, files []string) {
 
 	for _, file := range files {
 		if err = addFileToZip(zipWriter, file); err != nil {
-			log.Fatal()
+			log.Fatal(err)
 		}
 	}
 	log.Printf("Finished compressing '%s'.", filename)
 }
 
+// addFileToZip will add compressed files to the zip specified by filename.
 func addFileToZip(zipWriter *zip.Writer, filename string) error {
 	log.Printf("Adding file '%s' to archive.", filename)
 	fileToZip, err := os.Open(filename)

@@ -11,10 +11,10 @@ import (
 	"github.com/JakBaranowski/gb-tools/fileops"
 )
 
-// CommandLoadout will glob all files in original directories specified in config file,
-// mirror all files from original directories in counterpart directories, and
-// then remove files not present in the original directories from the
-// counterpart directories.
+// CommandLoadout will glob all files in original directories specified in
+// config file, mirror all files from original directories in counterpart
+// directories, and then remove files not present in the original directories
+// from the counterpart directories.
 func CommandLoadout(conf config.Config) {
 	argument, exist := common.GetOptionalArgument(2)
 	if exist {
@@ -45,9 +45,9 @@ func mirrorLoadoutsFromPath(sourceRelativePath string) {
 	)
 }
 
-// createPrefixedDirPath is a helper function that takes a originalPath and returns
-// a new path almost identical to the originalPath but with a prefix added at the
-// beginning of last directory name.
+// createPrefixedDirPath is a helper function that takes a originalPath and
+// returns a new path almost identical to the originalPath but with a prefix
+// added at the beginning of last directory name.
 func createPrefixedDirPath(originalPath string, prefix string) string {
 	separator := ""
 	if strings.Contains(originalPath, "\\") {

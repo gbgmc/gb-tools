@@ -21,7 +21,7 @@ func Copy(pathToSource string, pathToDestination string) {
 	common.Must(err)
 }
 
-// Touches, i.e. creates an empty file, at destinationPath.
+// Touches, i.e. creates, an empty file at destinationPath.
 func Touch(pathToDestination string) {
 	dst, err := os.Create(pathToDestination)
 	common.Must(err)
@@ -40,9 +40,11 @@ func OpenAndReadFile(pathToFile string) []byte {
 func ReadFile(file *os.File) (fileByte []byte) {
 	fileStat, err := file.Stat()
 	common.Must(err)
+
 	fileByte = make([]byte, fileStat.Size())
 	_, err = file.Read(fileByte)
 	common.Must(err)
+
 	return fileByte
 }
 

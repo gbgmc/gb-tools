@@ -46,13 +46,8 @@ func ParseConfig() (conf Config) {
 	common.Must(err)
 	configFilePath := filepath.Join(userConfigDir, "gbt", "gbt.conf")
 	if fileops.DoesExist(configFilePath) {
-		log.Printf(
-			"Found user config file at '%s'. Proceeding with user config.",
-			configFilePath,
-		)
 		conf = ParseFileConfig(configFilePath)
 	} else {
-		log.Printf("No user config found. Proceeding with default config.")
 		conf = ParseEmbededConfig()
 	}
 	return

@@ -21,6 +21,10 @@ func main() {
 		loadout.CommandLoadout(conf)
 	case "pack":
 		pack.CommandPack()
+	case "install":
+		pack.CommandInstall(conf)
+	case "uninstall":
+		pack.CommandUninstall(conf)
 	case "config":
 		config.CommandConfig(conf)
 	default:
