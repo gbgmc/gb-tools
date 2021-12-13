@@ -14,7 +14,6 @@ type Manifest struct {
 	Name         string
 	Version      string
 	Dependencies []string
-	Globs        []string
 	Files        []string
 }
 
@@ -29,35 +28,30 @@ func ParseManifest(manifestPath string) (manifest Manifest) {
 	return
 }
 
-// Gets all files
+// Gets all files from a manifest
 func GetFiles(manifest Manifest) (filesList []string) {
 	log.Println("Getting files from manifest")
 	for _, dependency := range manifest.Dependencies {
 		dependencyFiles := GetFiles(ParseManifest(dependency))
 		filesList = append(filesList, dependencyFiles...)
 	}
-	for _, glob := range manifest.Globs {
-		matches, err := filepath.Glob(glob)
+	for _, file := range manifest.Files {
+		matches, err := filepath.Glob(file)
 		common.Must(err)
 		filesList = append(filesList, matches...)
-	}
-	filesList = append(filesList, manifest.Files...)
-	log.Println("Found files")
-	for _, file := range filesList {
-		log.Println(file)
 	}
 	filesList = normalizeSlashes(removeDuplicateFiles(filesList))
 	return
 }
 
 func normalizeSlashes(filesList []string) []string {
+	log.Println("Normalizing slashes in file paths")
 	filesListNormalized := []string{}
 	for _, file := range filesList {
 		filesListNormalized = append(filesListNormalized, filepath.ToSlash(file))
 	}
 	return filesListNormalized
 }
-
 
 func removeDuplicateFiles(filesList []string) []string {
 	log.Println("Removing duplicated files")
