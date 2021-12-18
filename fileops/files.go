@@ -7,6 +7,16 @@ import (
 	"github.com/JakBaranowski/gb-tools/common"
 )
 
+// Saves the provided data in a file under the specified pathToDestination.
+func Save(data []byte, pathToDestination string) {
+	dst, err := os.Create(pathToDestination)
+	common.Must(err)
+	defer dst.Close()
+
+	_, err = dst.Write(data)
+	common.Must(err)
+}
+
 // Copies file and it's content from a file at sourcePath to a file at dstPath.
 func Copy(pathToSource string, pathToDestination string) {
 	src, err := os.Open(pathToSource)

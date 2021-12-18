@@ -3,6 +3,7 @@ package config
 import (
 	"embed"
 	"encoding/json"
+	"errors"
 	"log"
 	"os"
 	"path/filepath"
@@ -16,11 +17,9 @@ var embededConfig embed.FS
 
 // Config is a struct used to hold the contents of the configuration json file.
 type Config struct {
-	GamePath string
-	Loadouts []struct {
-		Name                    string
-		SourceRelativePath      string
-		DestinationRelativePath string
+	GamePaths []struct {
+		Name string
+		Path string
 	}
 }
 
@@ -70,4 +69,15 @@ func SaveConfig(conf Config) {
 	err = os.WriteFile(configFilePath, configFileContent, 0666)
 	common.Must(err)
 	log.Printf("Config file saved in '%s'.", configFilePath)
+}
+
+// Returns the game path with the provided name from the config. If the game path
+// with the given name does not exists returns nil.
+func (conf *Config) GetGamePath(name string) (string, error) {
+	for _, gamePath := range conf.GamePaths {
+		if gamePath.Name == name {
+			return gamePath.Path, nil
+		}
+	}
+	return "", errors.New("game path not found")
 }

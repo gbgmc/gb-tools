@@ -17,6 +17,20 @@ type Manifest struct {
 	Files        []string
 }
 
+// Creates a new Manifest struct with the provided data.
+func NewManifest(
+	name string,
+	version string,
+	dependencies []string,
+	files []string,
+) (manifest Manifest) {
+	manifest.Name = name
+	manifest.Version = version
+	manifest.Dependencies = dependencies
+	manifest.Files = files
+	return manifest
+}
+
 // Parses the manifest file under the provided manifestPath. Returns manifest
 // with parsed manifest values.
 func ParseManifest(manifestPath string) (manifest Manifest) {
@@ -28,11 +42,18 @@ func ParseManifest(manifestPath string) (manifest Manifest) {
 	return
 }
 
+// Saves the manifest under specified path.
+func (manifest *Manifest) Save(path string) {
+	jsonData, _ := json.MarshalIndent(manifest, "", "    ")
+	fileops.Save(jsonData, path)
+}
+
 // Gets all files from a manifest
-func GetFiles(manifest Manifest) (filesList []string) {
+func (manifest *Manifest) GetFiles() (filesList []string) {
 	log.Println("Getting files from manifest")
-	for _, dependency := range manifest.Dependencies {
-		dependencyFiles := GetFiles(ParseManifest(dependency))
+	for _, dependencyPath := range manifest.Dependencies {
+		dependency := ParseManifest(dependencyPath)
+		dependencyFiles := dependency.GetFiles()
 		filesList = append(filesList, dependencyFiles...)
 	}
 	for _, file := range manifest.Files {
@@ -44,6 +65,8 @@ func GetFiles(manifest Manifest) (filesList []string) {
 	return
 }
 
+// Normalizes slashes in paths from the provided fileList in order to avoid
+// issues with paths on different OS.
 func normalizeSlashes(filesList []string) []string {
 	log.Println("Normalizing slashes in file paths")
 	filesListNormalized := []string{}
@@ -53,6 +76,7 @@ func normalizeSlashes(filesList []string) []string {
 	return filesListNormalized
 }
 
+// Removes duplicated entries from a provided fileList.
 func removeDuplicateFiles(filesList []string) []string {
 	log.Println("Removing duplicated files")
 	foundFiles := make(map[string]bool)

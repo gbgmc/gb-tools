@@ -5,7 +5,6 @@ import (
 
 	"github.com/JakBaranowski/gb-tools/common"
 	"github.com/JakBaranowski/gb-tools/config"
-	"github.com/JakBaranowski/gb-tools/loadout"
 	"github.com/JakBaranowski/gb-tools/pack"
 )
 
@@ -17,8 +16,6 @@ func main() {
 	)
 	common.Must(err)
 	switch commandString {
-	case "loadout":
-		loadout.CommandLoadout(conf)
 	case "pack":
 		pack.CommandPack()
 	case "install":
@@ -29,7 +26,8 @@ func main() {
 		config.CommandConfig(conf)
 	default:
 		log.Printf(
-			"Unsupported command \"%s\". Supported commands are: 'loadout', 'pack' and 'config'",
+			`Unsupported command \"%s\". Supported commands are: 'pack', 
+			'install', 'uninstall' and 'config'`,
 			commandString,
 		)
 	}
