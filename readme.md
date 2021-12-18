@@ -139,7 +139,7 @@ GB Tools config can be used to change the installation path used by the `install
 }
 ```
 
-You can change the default game path in the GB Tools config file, or you can add additional game paths. Game paths stored in GB Tools config are only used with the `install` and `uninstall` commands. For more details go to [Installing game modes](#installing-game-modes) or [Uninstalling game modes](#uninstalling-game-modes).
+You can change the default game path in the GB Tools config file, or you can add additional game paths.
 
 ## Contributing
 
