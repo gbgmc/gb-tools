@@ -2,14 +2,15 @@
 
 ## Description
 
-This is a set of tools that hopefully will help with developing game modes for Ground Branch.
+This is a set of tools that aim to automate the repetitive work required when working on
+Ground Branch game modes.
 
 ## Table of contents:
 
 1. [Installation](#installation)
 2. [Usage](#usage)
 3. [Contributing](#contributing)
-4. [Credits](#credits)
+4. [Kudos](#kudos)
 5. [License](#license)
 
 ## Installation
@@ -23,24 +24,9 @@ from the [releases](https://github.com/JakBaranowski/gb-tools/releases) section,
 
 ## Usage
 
-### Mirroring AI loadouts
-
-Currently, due to a bug, Ground Branch mission editor will use invalid paths when selecting AI loadouts (it will use folder `AdGuys` instead of `BadGuys`). As it turns out this can be resolved by creating a folder with one extra letter in front of the folder name that will mirror the contents of the original AI loadout folders. So if you would like to add your own loadout for AI to use, you would have to place the file in both the original and mirrored directory. This tool can take care of the repetetive process. 
-
-1. Make sure to install the tool ([instructions](#installation))
-2. Create your loadout file,
-2. Place the loadout file in the original AI loadout folder, by default 
-`C:\Program Files (x86)\Steam\steamapps\common\Ground Branch\GroundBranch\Content\GroundBranch\AI\Loadouts\BadGuys`
-3. Open Command Line in Ground Branch installation folder,
-4. Run `gbt.exe loadout` command in the command line prompt.
-
-Note: this will also remove files in the `_BadGuys` folder if they don't have a counterpart in the original `BadGuys` folder.
-
-Alternativly, if you use Visual Studio Code to edit the AI loadouts you can use an extension that will run a command whenever you save a file with a mathing path, e.g.: [Save and Run by wk-j](https://marketplace.visualstudio.com/items?itemName=wk-j.save-and-run) and configure it to run the `gbt.exe loadout` command whenever a file is saved to the original AI loadout folder.
-
 ### Packaging game modes
 
-If you're working on game modes and want to deliver them in a manner that will make it easy to "install" them. Best way is providing a simple zip archive that can be unpacked in the game root folder by the "end user". You can create  such archives using the `gbt.exe gamemode pack <manifestFilePath>` command. Here's how:
+If you're working on game modes and want to deliver them in a manner that makes it easy to add them to the game best way is providing a simple zip archive that retains the directory hierarchy of the game. Doing this by hand is repetetive and error prone. You can create such archives automatically using GB Tools `pack` command the command. Here's how:
 
 1. Make sure to install the tool ([instructions](#installation))
 2. Create a manifest file at the Ground Branch root directory, by default 
@@ -50,54 +36,51 @@ If you're working on game modes and want to deliver them in a manner that will m
 
 For more information on manifests see [Manifests](#manifests).
 
-### Config
+### Installing/Uninstalling the game modes (EXPERIMENTAL)
 
-Ground Branch tools config can be used to set up
+GB Tools installation and uninstallation commands are created with the sole purpose of making it easier to keep your game modes repository separate from the game installation folder. This is quite helpful since reinstalling the game does not require you to clone and setup the repository again. Moreover the `install` command follows the same logic as the `pack` command, so if you've messed up the game mode manifest then you'll know it first.
 
-* which AI loadouts directories Ground Branch Tools should mirror when the `loadout` command is run, and
-* change the installation path used by the `install` and `uninstall` commands.
+GB Tools `install` command moves the files matching game mode manifest rules from the repository to the game installation directory specified in GB tools config. `uninstall` command removes the files matching game mode manifest rules from game installation directory specified in GB tools config.
 
-To create Ground Branch Tools config use the `gbt.exe config`. The config will be created at the following path `%AppData%\gbt\gbt.conf`. You can open the config with any text editor.
+To install a game mode use the following command
 
-If no config is present Ground Branch Tools will use the default config.
+`gbt.exe install "<manifestFilePath>" [gameInstallationPathName]`
 
-#### Game path
+where `<manifestFilePath>` is the relative path from the current directory to the game mode manifest file, and `[gameInstallationPathName] is the name of the installation path from the GB Tools config file.
 
-If you've installed Ground Branch in any directory different than `C:/Program Files (x86)/Steam/steamapps/common/Ground Branch` you will need to change the value of the `GamePath` parameter in the Ground Branch Tools config with the actual path to Ground Branch installation directory.
+To uninstall a game mode use the following command
 
-#### Loadouts
+`gbt.exe uninstall "<manifestFilePath>" [gameInstallationPathName]`
 
-To mirror additional directories containing AI loadout files, add entries for each extra directory to the `Loadouts` array. Each entry in `Loadouts` array has to have `Name`, `SourceRelativePath`, and `DestinationRelativePath`.
+where `<manifestFilePath>` is the relative path from the current directory to the game mode manifest file, and `[gameInstallationPathName] is the name of the installation path from the GB Tools config file.
 
-For example to mirror loadout files from `GroundBranch/Content/GroundBranch/AI/Loadouts/Example` directory in `GroundBranch/Content/GroundBranch/AI/Loadouts/_Example` directory add the following entry to the `Loadouts` array:
+### Using non default Ground Branch installation directory
 
-```json
-{
-  "Name": "Example",
-  "SourceRelativePath": "GroundBranch/Content/GroundBranch/AI/Loadouts/Example",
-  "DestinationRelativePath": "GroundBranch/Content/GroundBranch/AI/Loadouts/_Example"
-}
-```
+If you've installed Ground Branch in any directory other than `C:/Program Files (x86)/Steam/steamapps/common/Ground Branch` you will need to change the default game path in the GB Tools config to the actual absolute path to Ground Branch installation directory. To do so
 
-In the end the config would look like this:
+1. First, make sure to save GB Tools config with the following command `gbt.exe config`.
+2. Open GB Tools config, available under `%AppData%\gbt\gbt.conf`, with any text editor .
+3. Change the path parameter of the `default` entry.
+4. Save the changes and you're good to go.
+
+For example if you installed Ground Branch to path `D:/Games/Ground Branch` your GB Tools config file should look like this:
 
 ```json
 {
-  "GamePath": "C:/Program Files (x86)/Steam/steamapps/common/Ground Branch",
-  "Loadouts": [
-    {
-      "Name": "BadGuys",
-      "SourceRelativePath": "GroundBranch/Content/GroundBranch/AI/Loadouts/BadGuys",
-      "DestinationRelativePath": "GroundBranch/Content/GroundBranch/AI/Loadouts/_BadGuys"
-    },
-    {
-      "Name": "Example",
-      "SourceRelativePath": "GroundBranch/Content/GroundBranch/AI/Loadouts/Example",
-      "DestinationRelativePath": "GroundBranch/Content/GroundBranch/AI/Loadouts/_Example"
-    }
-  ]
+    "gamePaths": [
+        {
+            "name": "default",
+            "path": "D:/Games/Ground Branch"
+        },
+        {
+            "name": "CTE",
+            "path": "C:/Program Files (x86)/Steam/steamapps/common/GROUND BRANCH CTE"
+        }
+    ]
 }
 ```
+
+Alternatively, you can add an extra path to the config file.
 
 ### Manifests
 
@@ -124,11 +107,49 @@ Game mode manifest files can have any extension, but has to follow json formatti
 * **dependencies** is an array of paths to other manifests coontaining files required by this game mode.
 * **files** is an array of paths to files used in the game mode. Files paths can use glob patterns.
 
+### Config
+
+GB Tools config can be used to change the installation path used by the `install` and `uninstall` commands.
+
+To create GB Tools config use the `gbt.exe config`. The config will be created at the following path `%AppData%\gbt\gbt.conf`. You can open the config with any text editor.
+
+If no config is present GB Tools will use the default config.
+
+```json
+{
+    "gamePaths": [
+        {
+            "name": "default",
+            "path": "D:/Games/Ground Branch"
+        },
+        {
+            "name": "CTE",
+            "path": "C:/Program Files (x86)/Steam/steamapps/common/GROUND BRANCH CTE"
+        }
+    ]
+}
+```
+
+#### Game paths
+
+GB Tools can support multiple game paths. The default GB Tools config has two game paths:
+
+* `default` game path `C:/Program Files (x86)/Steam/steamapps/common/Ground Branch`, and
+* `CTE` game path `C:/Program Files (x86)/Steam/steamapps/common/GROUND BRANCH CTE`.
+
+You can change the default game path in the GB Tools config file, or you can add additional game paths.
+
+Game paths stored in GB Tools config are only used with the `install` and `uninstall` commands. For more details go to [Installing game modes](#installing-game-modes) or [Uninstalling game modes](#uninstalling-game-modes).
+
 ## Contributing
 
 Everyone is more than welcome to fork the project and post pull requests. I'll try to review and merge as soon as possible.
 
 The project uses GoLang 1.17.1.
+
+## Kudos
+
+* @Bob-AT for contribiutions to this project.
 
 ## License
 
