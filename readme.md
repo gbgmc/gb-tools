@@ -109,18 +109,19 @@ Game mode manifest files can have any extension, but has to follow json formatti
 
 ### Config
 
-GB Tools config can be used to change the installation path used by the `install` and `uninstall` commands.
-
 To create GB Tools config use the `gbt.exe config`. The config will be created at the following path `%AppData%\gbt\gbt.conf`. You can open the config with any text editor.
 
-If no config is present GB Tools will use the default config.
+GB Tools config can be used to change the installation path used by the `install` and `uninstall` commands. If no config is present GB Tools will use the default config. The default GB Tools config has two game paths:
+
+* `default` game path `C:/Program Files (x86)/Steam/steamapps/common/Ground Branch`, and
+* `CTE` game path `C:/Program Files (x86)/Steam/steamapps/common/GROUND BRANCH CTE`.
 
 ```json
 {
     "gamePaths": [
         {
             "name": "default",
-            "path": "D:/Games/Ground Branch"
+            "path": "C:/Program Files (x86)/Steam/steamapps/common/Ground Branch"
         },
         {
             "name": "CTE",
@@ -130,22 +131,13 @@ If no config is present GB Tools will use the default config.
 }
 ```
 
-#### Game paths
-
-GB Tools can support multiple game paths. The default GB Tools config has two game paths:
-
-* `default` game path `C:/Program Files (x86)/Steam/steamapps/common/Ground Branch`, and
-* `CTE` game path `C:/Program Files (x86)/Steam/steamapps/common/GROUND BRANCH CTE`.
-
-You can change the default game path in the GB Tools config file, or you can add additional game paths.
-
-Game paths stored in GB Tools config are only used with the `install` and `uninstall` commands. For more details go to [Installing game modes](#installing-game-modes) or [Uninstalling game modes](#uninstalling-game-modes).
+You can change the default game path in the GB Tools config file, or you can add additional game paths. Game paths stored in GB Tools config are only used with the `install` and `uninstall` commands. For more details go to [Installing game modes](#installing-game-modes) or [Uninstalling game modes](#uninstalling-game-modes).
 
 ## Contributing
 
 Everyone is more than welcome to fork the project and post pull requests. I'll try to review and merge as soon as possible.
 
-The project uses GoLang 1.17.1.
+The project uses GoLang 1.17.5.
 
 ## Kudos
 
