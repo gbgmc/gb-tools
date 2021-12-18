@@ -17,22 +17,22 @@ Ground Branch game modes.
 
 To install the tools:
 
-1. Download the latest release matching your installed version of Ground Branch
-from the [releases](https://github.com/JakBaranowski/gb-tools/releases) section,
-2. Place the executable in the Ground Branch root directory, by default 
-`C:\Program Files (x86)\Steam\steamapps\common\Ground Branch`.
+1. Download the latest release matching your installed version of Ground Branch from the [releases](https://github.com/JakBaranowski/gb-tools/releases) section,
+2. Place the executable in your Ground Branch game modes directory.
 
 ## Usage
 
 ### Packaging game modes
 
-If you're working on game modes and want to deliver them in a manner that makes it easy to add them to the game best way is providing a simple zip archive that retains the directory hierarchy of the game. Doing this by hand is repetetive and error prone. You can create such archives automatically using GB Tools `pack` command the command. Here's how:
+Best way of delivering your game modes to the users is by providing a simple zip archive that retains the files hierarchy of the game. Preparing a package like this by hand is repetetive and error prone. GB Tools can automate this process for you with the `pack` command. Here's how to use it:
 
-1. Make sure to install the tool ([instructions](#installation))
-2. Create a manifest file at the Ground Branch root directory, by default 
-`C:\Program Files (x86)\Steam\steamapps\common\Ground Branch`.
-3. Run the `gbt.exe pack "<manifestFilePath>"` command.
-4. The packaged game mode should be waiting for you at the Ground Branch root folder.
+```
+gbt.exe pack "<manifestFilePath>"
+```
+
+where:
+
+* `"<manifestFilePath>"` is the relative path from the current directory to the game mode manifest file.
 
 For more information on manifests see [Manifests](#manifests).
 
@@ -40,30 +40,38 @@ For more information on manifests see [Manifests](#manifests).
 
 GB Tools installation and uninstallation commands are created with the sole purpose of making it easier to keep your game modes repository separate from the game installation folder. This is quite helpful since reinstalling the game does not require you to clone and setup the repository again. Moreover the `install` command follows the same logic as the `pack` command, so if you've messed up the game mode manifest then you'll know it first.
 
-GB Tools `install` command moves the files matching game mode manifest rules from the repository to the game installation directory specified in GB tools config. `uninstall` command removes the files matching game mode manifest rules from game installation directory specified in GB tools config.
+GB Tools `install` command moves the files, matching game mode manifest rules, from the repository to the game installation directory specified in GB tools config. To install a game mode use the following command:
 
-To install a game mode use the following command
+```
+gbt.exe install "<manifestFilePath>" [gameInstallationPathName]
+```
 
-`gbt.exe install "<manifestFilePath>" [gameInstallationPathName]`
+where:
 
-where `<manifestFilePath>` is the relative path from the current directory to the game mode manifest file, and `[gameInstallationPathName] is the name of the installation path from the GB Tools config file.
+* `<manifestFilePath>` is the relative path from the current directory to the game mode manifest file, and 
+* `[gameInstallationPathName]` is an optional argument specifying the name of the installation path from the GB Tools config file. By default it's `default`.
 
-To uninstall a game mode use the following command
+`uninstall` command removes the files, matching game mode manifest rules, from game installation directory specified in GB tools config. To uninstall a game mode use the following command:
 
-`gbt.exe uninstall "<manifestFilePath>" [gameInstallationPathName]`
+```
+gbt.exe uninstall "<manifestFilePath>" [gameInstallationPathName]
+```
 
-where `<manifestFilePath>` is the relative path from the current directory to the game mode manifest file, and `[gameInstallationPathName] is the name of the installation path from the GB Tools config file.
+where:
+
+* `<manifestFilePath>` is the relative path from the current directory to the game mode manifest file, and 
+* `[gameInstallationPathName]` is an optional argument specifying the name of the installation path from the GB Tools config file. By default it's `default`.
 
 ### Using non default Ground Branch installation directory
 
-If you've installed Ground Branch in any directory other than `C:/Program Files (x86)/Steam/steamapps/common/Ground Branch` you will need to change the default game path in the GB Tools config to the actual absolute path to Ground Branch installation directory. To do so
+If you've installed Ground Branch in any directory other than `C:/Program Files (x86)/Steam/steamapps/common/Ground Branch` you will need to change the default game path in the GB Tools config to the actual absolute path to Ground Branch installation directory.
 
 1. First, make sure to save GB Tools config with the following command `gbt.exe config`.
-2. Open GB Tools config, available under `%AppData%\gbt\gbt.conf`, with any text editor .
+2. Open GB Tools config, available under `%AppData%\gbt\gbt.conf`, with any text editor.
 3. Change the path parameter of the `default` entry.
-4. Save the changes and you're good to go.
+4. Save the changes.
 
-For example if you installed Ground Branch to path `D:/Games/Ground Branch` your GB Tools config file should look like this:
+For example, if you installed Ground Branch to path `D:/Games/Ground Branch` your GB Tools config file should look like this:
 
 ```json
 {
@@ -104,7 +112,7 @@ Game mode manifest files can have any extension, but has to follow json formatti
 
 * **name** can be any string.
 * **version** is not really used atm.
-* **dependencies** is an array of paths to other manifests coontaining files required by this game mode.
+* **dependencies** is an array of paths to other manifests containing files required by the game mode.
 * **files** is an array of paths to files used in the game mode. Files paths can use glob patterns.
 
 ### Config
