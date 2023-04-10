@@ -1,12 +1,11 @@
-package pack
+package common
 
 import (
 	"encoding/json"
 	"log"
 	"path/filepath"
 
-	"github.com/JakBaranowski/gb-tools/common"
-	"github.com/JakBaranowski/gb-tools/fileops"
+	"github.com/spf13/cobra"
 )
 
 // Struct for parsing json formatted game mode manifests.
@@ -17,35 +16,15 @@ type Manifest struct {
 	Files        []string
 }
 
-// Creates a new Manifest struct with the provided data.
-func NewManifest(
-	name string,
-	version string,
-	dependencies []string,
-	files []string,
-) (manifest Manifest) {
-	manifest.Name = name
-	manifest.Version = version
-	manifest.Dependencies = dependencies
-	manifest.Files = files
-	return manifest
-}
-
 // Parses the manifest file under the provided manifestPath. Returns manifest
 // with parsed manifest values.
 func ParseManifest(manifestPath string) (manifest Manifest) {
 	log.Println("Opening manifest " + manifestPath)
-	manifestFile := fileops.OpenAndReadFile(manifestPath)
+	manifestFile := OpenAndReadFile(manifestPath)
 	log.Println("Parsing manifest " + manifestPath)
 	err := json.Unmarshal(manifestFile, &manifest)
-	common.Must(err)
+	cobra.CheckErr(err)
 	return
-}
-
-// Saves the manifest under specified path.
-func (manifest *Manifest) Save(path string) {
-	jsonData, _ := json.MarshalIndent(manifest, "", "    ")
-	fileops.Save(jsonData, path)
 }
 
 // Gets all files from a manifest
@@ -58,7 +37,7 @@ func (manifest *Manifest) GetFiles() (filesList []string) {
 	}
 	for _, file := range manifest.Files {
 		matches, err := filepath.Glob(file)
-		common.Must(err)
+		cobra.CheckErr(err)
 		filesList = append(filesList, matches...)
 	}
 	filesList = normalizeSlashes(removeDuplicateFiles(filesList))

@@ -1,4 +1,4 @@
-package fileops
+package common
 
 import (
 	"archive/zip"
@@ -6,7 +6,7 @@ import (
 	"log"
 	"os"
 
-	"github.com/JakBaranowski/gb-tools/common"
+	"github.com/spf13/cobra"
 )
 
 // CompressFiles will iterate through the provided files list add them to
@@ -14,7 +14,7 @@ import (
 func CompressFiles(filename string, files []string) {
 	log.Printf("Compressing '%s'.", filename)
 	zipFile, err := os.Create(filename)
-	common.Must(err)
+	cobra.CheckErr(err)
 	defer zipFile.Close()
 
 	zipWriter := zip.NewWriter(zipFile)
@@ -32,14 +32,14 @@ func CompressFiles(filename string, files []string) {
 func addFileToZip(zipWriter *zip.Writer, filename string) error {
 	log.Printf("Adding file '%s' to archive.", filename)
 	fileToZip, err := os.Open(filename)
-	common.Must(err)
+	cobra.CheckErr(err)
 	defer fileToZip.Close()
 
 	info, err := fileToZip.Stat()
-	common.Must(err)
+	cobra.CheckErr(err)
 
 	header, err := zip.FileInfoHeader(info)
-	common.Must(err)
+	cobra.CheckErr(err)
 
 	header.Name = filename
 	header.Method = zip.Deflate
