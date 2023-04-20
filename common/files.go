@@ -1,6 +1,7 @@
 package common
 
 import (
+	"errors"
 	"io"
 	"os"
 
@@ -60,8 +61,21 @@ func CreateDir(pathToDir string, perm os.FileMode) {
 	cobra.CheckErr(err)
 }
 
-// Removes the file at pathToFile.
-func RemoveFile(pathToFile string) {
-	err := os.Remove(pathToFile)
+// Removes the file or empty directory at path. Ignores non-empty directories.
+func Remove(path string) {
+	err := os.Remove(path)
+	var pathErr *os.PathError
+	if errors.As(err, &pathErr) &&
+		errors.Unwrap(err).Error() == "The directory is not empty." {
+		return
+	}
+	cobra.CheckErr(err)
+	return
+}
+
+// Writes body to file. If file doesn't exist it's created with permission perm
+// otherwise permission doesn't change.
+func WriteFile(pathToFile string, body []byte, perm os.FileMode) {
+	err := os.WriteFile(pathToFile, body, perm)
 	cobra.CheckErr(err)
 }

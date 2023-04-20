@@ -18,10 +18,10 @@ type Manifest struct {
 
 // Parses the manifest file under the provided manifestPath. Returns manifest
 // with parsed manifest values.
-func ParseManifest(manifestPath string) (manifest Manifest) {
-	log.Println("Opening manifest " + manifestPath)
-	manifestFile := OpenAndReadFile(manifestPath)
-	log.Println("Parsing manifest " + manifestPath)
+func ParseManifest(path string) (manifest Manifest) {
+	log.Println("Opening manifest " + path)
+	manifestFile := OpenAndReadFile(path)
+	log.Println("Parsing manifest " + path)
 	err := json.Unmarshal(manifestFile, &manifest)
 	cobra.CheckErr(err)
 	return
@@ -42,6 +42,12 @@ func (manifest *Manifest) GetFiles() (filesList []string) {
 	}
 	filesList = normalizeSlashes(removeDuplicateFiles(filesList))
 	return
+}
+
+func (manifest *Manifest) Save(path string) {
+	manifestJson, err := json.MarshalIndent(manifest, "", "    ")
+	cobra.CheckErr(err)
+	WriteFile(path, manifestJson, 0755)
 }
 
 // Normalizes slashes in paths from the provided fileList in order to avoid

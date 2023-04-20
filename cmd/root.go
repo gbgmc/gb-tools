@@ -14,8 +14,9 @@ import (
 )
 
 var (
-	cfgFile string
-	gameDir string
+	cfgFile               string
+	gameDir               string
+	createInstallManifest bool
 )
 
 // rootCmd represents the base command when called without any subcommands
