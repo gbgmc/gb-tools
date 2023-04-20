@@ -30,11 +30,21 @@ gbt uninstall GBGMC.json -c gbt.conf`,
 		manifest := common.ParseManifest(manifestPath)
 		log.Printf("Started uninstalling %s", manifest.Name)
 		files := manifest.GetFiles()
+		dirs := make(map[string]bool)
 		for _, file := range files {
 			targetFile := filepath.Join(viper.GetString("gameDir"), file)
-			log.Printf("Removing file %s ", targetFile)
 			if common.DoesExist(targetFile) {
-				common.RemoveFile(targetFile)
+				common.Remove(targetFile)
+				log.Printf("Removed file %s ", targetFile)
+			}
+			dir := filepath.Dir(targetFile)
+			if _, value := dirs[dir]; !value {
+				dirs[dir] = true
+			}
+		}
+		for dir := range dirs {
+			if common.DoesExist(dir) {
+				common.Remove(dir)
 			}
 		}
 		log.Printf("Finished uninstalling %s", manifest.Name)
