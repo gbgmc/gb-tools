@@ -5,6 +5,7 @@ Copyright © 2023 Jakub Baranowski jbaranowski@rubberduckling.dev
 package cmd
 
 import (
+	"fmt"
 	"log"
 	"path/filepath"
 
@@ -26,13 +27,15 @@ gbt uninstall GBGMC.json -c gbt.conf`,
 		if len(args) != 1 {
 			log.Fatalf("Missing required argument \"manifestFilePath\"")
 		}
-		manifestPath := args[0]
-		manifest := common.ParseManifest(manifestPath)
-		log.Printf("Started uninstalling %s", manifest.Name)
-		files := manifest.GetFiles()
+		projectManifestPath, err := filepath.Abs(args[0])
+		cobra.CheckErr(err)
+		projectManifest := common.ParseManifest(projectManifestPath)
+		log.Printf("Started uninstalling %s", projectManifest.Name)
+		files := projectManifest.GetFiles()
 		dirs := make(map[string]bool)
+		gameDir := viper.GetString("gameDir")
 		for _, file := range files {
-			targetFile := filepath.Join(viper.GetString("gameDir"), file)
+			targetFile := filepath.Join(gameDir, file)
 			if common.DoesExist(targetFile) {
 				common.Remove(targetFile)
 				log.Printf("Removed file %s ", targetFile)
@@ -47,10 +50,31 @@ gbt uninstall GBGMC.json -c gbt.conf`,
 				common.Remove(dir)
 			}
 		}
-		log.Printf("Finished uninstalling %s", manifest.Name)
+		if installManifest {
+			log.Printf("Finished uninstalling %s", projectManifest.Name)
+			return
+		}
+		log.Print("Removing install manifest")
+		if filepath.Dir(projectManifestPath) == gameDir {
+			common.Remove(projectManifestPath)
+		} else if installManifestPath := filepath.Join(
+			gameDir,
+			fmt.Sprintf("%s.json", projectManifest.Name),
+		); common.DoesExist(installManifestPath) {
+			common.Remove(installManifestPath)
+		}
+		log.Printf("Finished uninstalling %s", projectManifest.Name)
 	},
 }
 
 func init() {
 	rootCmd.AddCommand(uninstallCmd)
+
+	uninstallCmd.Flags().BoolVarP(
+		&installManifest,
+		"manifest",
+		"m",
+		false,
+		"If set will not remove post installation manifest from game directory. Post installation manifest contains a list of exact files copied to game directory.",
+	)
 }

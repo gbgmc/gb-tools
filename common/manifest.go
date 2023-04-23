@@ -44,9 +44,16 @@ func (manifest *Manifest) GetFiles() (filesList []string) {
 	return
 }
 
-func (manifest *Manifest) Save(path string) {
+// Returns json marshaled manifest.
+func (manifest *Manifest) Marshal() []byte {
 	manifestJson, err := json.MarshalIndent(manifest, "", "    ")
 	cobra.CheckErr(err)
+	return manifestJson
+}
+
+// Saves the manifest under given path.
+func (manifest *Manifest) Save(path string) {
+	manifestJson := manifest.Marshal()
 	WriteFile(path, manifestJson, 0755)
 }
 

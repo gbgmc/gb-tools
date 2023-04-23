@@ -27,7 +27,8 @@ gbt install GBGMC.json -c gbt.conf`,
 		if len(args) != 1 {
 			log.Fatalf("Missing required argument \"manifestFilePath\"")
 		}
-		projectManifestPath := args[0]
+		projectManifestPath, err := filepath.Abs(args[0])
+		cobra.CheckErr(err)
 		projectManifest := common.ParseManifest(projectManifestPath)
 		log.Printf("Started installing %s", projectManifest.Name)
 		files := projectManifest.GetFiles()
@@ -38,10 +39,11 @@ gbt install GBGMC.json -c gbt.conf`,
 			log.Printf("Copying file %s to %s ", file, targetFile)
 			common.Copy(file, targetFile)
 		}
-		log.Printf("Finished installing %s", projectManifest.Name)
-		if !createInstallManifest {
+		if installManifest {
+			log.Printf("Finished installing %s", projectManifest.Name)
 			return
 		}
+		log.Print("Saving install manifest")
 		installManifest := common.Manifest{
 			Name:         projectManifest.Name,
 			Version:      projectManifest.Version,
@@ -53,6 +55,7 @@ gbt install GBGMC.json -c gbt.conf`,
 			fmt.Sprintf("%s.json", installManifest.Name),
 		)
 		installManifest.Save(installManifestPath)
+		log.Printf("Finished installing %s", projectManifest.Name)
 	},
 }
 
@@ -60,10 +63,10 @@ func init() {
 	rootCmd.AddCommand(installCmd)
 
 	installCmd.Flags().BoolVarP(
-		&createInstallManifest,
-		"createPostManifest",
+		&installManifest,
+		"manifest",
 		"m",
 		false,
-		"Creates post installation manifest in game directory. Post installation manifest contains a list of exact files copied to game directory.",
+		"If set will not create post installation manifest in game directory. Post installation manifest contains a list of exact files copied to game directory.",
 	)
 }

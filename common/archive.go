@@ -9,10 +9,11 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// CompressFiles will iterate through the provided files list add them to
+// Compress will iterate through the provided files list add them to
 // the a zip compressed file saved under filename.
-func CompressFiles(filename string, files []string) {
+func Compress(filename string, files []string, bodies map[string][]byte) {
 	log.Printf("Compressing '%s'.", filename)
+
 	zipFile, err := os.Create(filename)
 	cobra.CheckErr(err)
 	defer zipFile.Close()
@@ -21,15 +22,18 @@ func CompressFiles(filename string, files []string) {
 	defer zipWriter.Close()
 
 	for _, file := range files {
-		if err = addFileToZip(zipWriter, file); err != nil {
-			log.Fatal(err)
-		}
+		addFileToZip(zipWriter, file)
 	}
+
+	for name, body := range bodies {
+		addBodiesToZip(zipWriter, body, name)
+	}
+
 	log.Printf("Finished compressing '%s'.", filename)
 }
 
 // addFileToZip will add compressed files to the zip specified by filename.
-func addFileToZip(zipWriter *zip.Writer, filename string) error {
+func addFileToZip(zipWriter *zip.Writer, filename string) {
 	log.Printf("Adding file '%s' to archive.", filename)
 	fileToZip, err := os.Open(filename)
 	cobra.CheckErr(err)
@@ -45,9 +49,18 @@ func addFileToZip(zipWriter *zip.Writer, filename string) error {
 	header.Method = zip.Deflate
 
 	writer, err := zipWriter.CreateHeader(header)
-	if err != nil {
-		return err
-	}
+	cobra.CheckErr(err)
 	_, err = io.Copy(writer, fileToZip)
-	return err
+	cobra.CheckErr(err)
+}
+
+// addBytesToZip creates a file from the provided body and writes it to a zip file.
+func addBodiesToZip(zipWriter *zip.Writer, body []byte, filename string) {
+	log.Printf("Adding file bytes as file %s to archive.", filename)
+
+	zipFile, err := zipWriter.Create(filename)
+	cobra.CheckErr(err)
+
+	_, err = zipFile.Write(body)
+	cobra.CheckErr(err)
 }
