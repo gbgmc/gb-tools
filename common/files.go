@@ -66,11 +66,10 @@ func Remove(path string) {
 	err := os.Remove(path)
 	var pathErr *os.PathError
 	if errors.As(err, &pathErr) &&
-		errors.Unwrap(err).Error() == "The directory is not empty." {
+		pathErr.Err.Error() == "The directory is not empty." {
 		return
 	}
 	cobra.CheckErr(err)
-	return
 }
 
 // Writes body to file. If file doesn't exist it's created with permission perm
