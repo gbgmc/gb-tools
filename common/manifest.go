@@ -1,12 +1,11 @@
-package pack
+package common
 
 import (
 	"encoding/json"
 	"log"
 	"path/filepath"
 
-	"github.com/JakBaranowski/gb-tools/common"
-	"github.com/JakBaranowski/gb-tools/fileops"
+	"github.com/spf13/cobra"
 )
 
 // Struct for parsing json formatted game mode manifests.
@@ -19,31 +18,47 @@ type Manifest struct {
 
 // Parses the manifest file under the provided manifestPath. Returns manifest
 // with parsed manifest values.
-func ParseManifest(manifestPath string) (manifest Manifest) {
-	log.Println("Opening manifest " + manifestPath)
-	manifestFile := fileops.OpenAndReadFile(manifestPath)
-	log.Println("Parsing manifest " + manifestPath)
+func ParseManifest(path string) (manifest Manifest) {
+	log.Println("Opening manifest " + path)
+	manifestFile := OpenAndReadFile(path)
+	log.Println("Parsing manifest " + path)
 	err := json.Unmarshal(manifestFile, &manifest)
-	common.Must(err)
+	cobra.CheckErr(err)
 	return
 }
 
 // Gets all files from a manifest
-func GetFiles(manifest Manifest) (filesList []string) {
+func (manifest *Manifest) GetFiles() (filesList []string) {
 	log.Println("Getting files from manifest")
-	for _, dependency := range manifest.Dependencies {
-		dependencyFiles := GetFiles(ParseManifest(dependency))
+	for _, dependencyPath := range manifest.Dependencies {
+		dependency := ParseManifest(dependencyPath)
+		dependencyFiles := dependency.GetFiles()
 		filesList = append(filesList, dependencyFiles...)
 	}
 	for _, file := range manifest.Files {
 		matches, err := filepath.Glob(file)
-		common.Must(err)
+		cobra.CheckErr(err)
 		filesList = append(filesList, matches...)
 	}
 	filesList = normalizeSlashes(removeDuplicateFiles(filesList))
 	return
 }
 
+// Returns json marshaled manifest.
+func (manifest *Manifest) Marshal() []byte {
+	manifestJson, err := json.MarshalIndent(manifest, "", "    ")
+	cobra.CheckErr(err)
+	return manifestJson
+}
+
+// Saves the manifest under given path.
+func (manifest *Manifest) Save(path string) {
+	manifestJson := manifest.Marshal()
+	WriteFile(path, manifestJson, 0755)
+}
+
+// Normalizes slashes in paths from the provided fileList in order to avoid
+// issues with paths on different OS.
 func normalizeSlashes(filesList []string) []string {
 	log.Println("Normalizing slashes in file paths")
 	filesListNormalized := []string{}
@@ -53,6 +68,7 @@ func normalizeSlashes(filesList []string) []string {
 	return filesListNormalized
 }
 
+// Removes duplicated entries from a provided fileList.
 func removeDuplicateFiles(filesList []string) []string {
 	log.Println("Removing duplicated files")
 	foundFiles := make(map[string]bool)
